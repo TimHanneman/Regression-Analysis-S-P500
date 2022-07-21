@@ -1,0 +1,83 @@
+---
+title: "Hanneman_Assignment2"
+author: "Hanneman, Timothy"
+date: "09/26/2021"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set( echo=TRUE, comment="", message=FALSE, warning=FALSE )
+```
+
+
+```{r, include=TRUE}
+require( rmarkdown, quietly=TRUE )
+require( mosaic, quietly=TRUE )
+require( ggformula, quietly=TRUE )
+```
+
+
+```{r, echo=TRUE, results="hide"}
+dat = read.csv("sp500sincecovid.csv")
+head(dat, 5)
+summary(dat)
+str(dat$Date)
+dat$Date <- as.POSIXct(dat$Date, format = "%d-%b-%y")
+tail(dat, 5)
+```
+
+#### Untransformed Data
+```{r, echo=TRUE, results="hide"}
+fit = lm(Index ~ Date, data=dat)
+plot(Index ~ Date, data=dat, main="SP 500 COVID Crash & Rebound", xlab="Date", ylab="Value")
+axis(1, dat$Date,format(dat$Date, "%b-%d"))
+abline( fit, col=2)
+plot( fit, 1)
+plot( fit, 2)
+plot( fit, 4)
+summary(fit)
+```
+
+#### Percent Change
+```{r, echo=TRUE, results="hide"}
+y = dat$Index
+pct.gain <- (y[2:66]- y[1:65])/y[1:65] *100
+date_ = 2:66
+fit2 = lm(pct.gain ~ date_ )
+summary(fit2)
+confint(fit2)
+
+plot(pct.gain ~ date_, main="SP500 Percent Change During COVID", xlab="Weeks since Mar 30th 2020", ylab="Weekly Percent Change")
+abline(fit2, col=2)
+abline(0,0)
+
+plot(fit2,1)
+plot(fit2,2)
+plot(fit2, 4)
+
+```
+
+```{r, echo=TRUE, results="hide"}
+fit3 = lm(pct.gain[-1] ~ date_[-1] ) #Apparently this removes the outlier
+summary(fit3)
+confint(fit3)
+
+plot(fit3,1)
+plot(fit3,2)
+plot(fit3, 4)
+
+```
+
+
+```{r, echo=TRUE, results="hide"}
+#lack of evidence that the expected percent change has not changed
+
+fit4 = lm(pct.gain[-1] ~ 1) #model without the slope
+summary(fit4)
+confint(fit4)
+
+plot(fit4,1)
+plot(fit4,2)
+plot(fit4, 4)
+```
+
