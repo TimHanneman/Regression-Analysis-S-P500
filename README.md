@@ -1,4 +1,4 @@
-# Regression-Analysis-S-P500
+# Regression-Analysis-SP500
 Report of a Regression Analysis of the S&amp;P 500 from March 30th to June 28th 2021
 
 The analysis creates a linear model of weekly percent change. Model was checked for linearity, constant variance, and normality assumptions.
